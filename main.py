@@ -1,23 +1,23 @@
 import calendar
 from datetime import datetime
-from typing import List
+from typing import Dict, List
 
 from fastapi import FastAPI, Request, status
 from fastapi.encoders import jsonable_encoder
-from fastapi.responses import JSONResponse
-from pydantic import BaseModel, Field, ValidationError
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse, PlainTextResponse
+from pydantic import BaseModel, Field
 
 app = FastAPI(
     title="Deposit",
-    prefix='/deposit',
 )
 
 
-@app.exception_handler(ValidationError)
-async def validation_exception_handler(request: Request, error: ValidationError):
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, error: RequestValidationError):
     return JSONResponse(
         status_code=status.HTTP_400_BAD_REQUEST,
-        content=jsonable_encoder({"error": f'Описание ошибка + {str(error)}'}),
+        content=jsonable_encoder({"error": str(error)}),
     )
 
 
@@ -33,7 +33,7 @@ class Deposit(BaseModel):
     date: str = Field(default='31.01.2021')
     period: int = Field(ge=1, le=60, default=3)
     amount: int = Field(ge=10000, le=3000000, default=20000)
-    rate: int = Field(ge=0, default=6)
+    rate: int = Field(ge=1, le=8, default=6)
 
 
 def calc_deposit_(deposit: Deposit):
@@ -47,15 +47,16 @@ def calc_deposit_(deposit: Deposit):
         if amount > 0:
             res[current_date.strftime('%d.%m.%Y')] = round(amount * (1 + rate), 2)
             amount *= (1 + rate)
-        
+    print('calc_deposit_', res)  
     return res
 
 
 
-@app.post("/calc_deposit")
-def add_deposit(deposit: Deposit):
+@app.get('/calc_deposit')
+def get_deposit(deposit: Deposit):
     try:
         res = calc_deposit_(deposit)
+        print('res', res)
         return {"status": 200, "data": res}
     except ValueError:
         return JSONResponse(
