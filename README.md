@@ -55,9 +55,8 @@ docker run -d -p 8000:8000 deposit
 ```
 Для теста выполнить команду в терминале 
 ```bush
-{
   curl -X 'GET' \
-  'http://127.0.0.1/calc_deposit' \
+  'http://127.0.0.1:8000/calc_deposit' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -65,5 +64,5 @@ docker run -d -p 8000:8000 deposit
   "period": 3,
   "amount": 20000,
   "rate": 6
-}
+  }'
 ```
