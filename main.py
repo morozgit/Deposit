@@ -1,11 +1,10 @@
 import calendar
 from datetime import datetime
-from typing import Dict, List
 
 from fastapi import FastAPI, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse, PlainTextResponse
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
 app = FastAPI(

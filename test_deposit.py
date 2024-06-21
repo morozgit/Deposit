@@ -1,5 +1,4 @@
 from datetime import datetime
-from fastapi.exceptions import RequestValidationError
 from main import Deposit, add_months, calc_deposit_
 
 EPS = 0.01
