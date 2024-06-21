@@ -51,15 +51,18 @@ uvicorn main:app --reload
 
 Запустить 
 ```bush
-docker run -d -p 80:80 deposit
+docker run -d -p 8000:8000 deposit
 ```
-В [Postman](https://www.postman.com/downloads/) выполнить get запрос http://127.0.0.1:80/calc_deposit с телом.
-
-Пример тела запроса.
+Для теста выполнить команду в терминале 
 ```bush
 {
+  curl -X 'GET' \
+  'http://127.0.0.1/calc_deposit' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
   "date": "31.01.2021",
-  "period": 2,
+  "period": 3,
   "amount": 20000,
   "rate": 6
 }
